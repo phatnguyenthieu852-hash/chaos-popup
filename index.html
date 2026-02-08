@@ -2,29 +2,31 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD v3</title>
+<title>CHAOS GOD SPAM</title>
 </head>
 
 <body style="background:black;color:red;font-family:consolas">
-<h2>👹 CHAOS GOD v3 — REAL POPUP</h2>
+<h2>👹 CHAOS GOD SPAM ENGINE</h2>
 <button onclick="start()">START CHAOS</button>
 
 <script>
 
 let popups=[];
-let maxPop=80; // giới hạn an toàn cho máy 16GB
+let maxPop=120; // giới hạn an toàn
 
 function start(){
 
-    // spawn boss trước
+    // boss đầu tiên
     createPopup(true);
 
-    // mỗi 1 giây +1 popup
+    // mỗi 10 giây spam 20 popup
     setInterval(()=>{
-        if(popups.length < maxPop){
-            createPopup(false);
+        for(let i=0;i<20;i++){
+            if(popups.length<maxPop){
+                createPopup(false);
+            }
         }
-    },1000);
+    },10000);
 }
 
 function createPopup(isBoss){
@@ -76,21 +78,14 @@ function createPopup(isBoss){
         if(Math.random()<0.6) speak(t);
     },400);
 
-    // chạy zigzag + teleport
+    // chạy random + teleport
     setInterval(()=>{
         let nx=Math.random()*screen.availWidth;
         let ny=Math.random()*screen.availHeight;
-
-        if(Math.random()<0.4){
-            nx+=Math.random()*300-150;
-            ny+=Math.random()*300-150;
-        }
-
         window.moveTo(nx,ny);
+    },200);
 
-    },180);
-
-    // đóng popup → spawn thêm
+    // đóng popup → sinh thêm
     window.addEventListener("beforeunload",()=>{
         try{
             window.opener.postMessage("spawn","*");
@@ -114,5 +109,6 @@ window.addEventListener("message",e=>{
 });
 
 </script>
+
 </body>
 </html>
