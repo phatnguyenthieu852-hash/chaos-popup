@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD PRO MAX</title>
+<title>CHAOS GOD ULTIMATE</title>
 
 <style>
 body{
@@ -10,21 +10,28 @@ body{
     overflow:hidden;
     background:black;
     font-family:consolas;
-    position:relative;
+    color:red;
 }
 
 .popup{
     position:absolute;
-    width:150px;
-    height:80px;
+    width:140px;
+    height:70px;
     background:#111;
     border:2px solid red;
-    color:red;
     display:flex;
     justify-content:center;
     align-items:center;
-    user-select:none;
     font-size:12px;
+    pointer-events:none;
+}
+
+.portal{
+    position:absolute;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:3px solid purple;
 }
 </style>
 </head>
@@ -33,9 +40,9 @@ body{
 
 <script>
 
-let level=1;
-let popups=[];
 let mouse={x:0,y:0};
+let popups=[];
+let level=1;
 
 const texts=[
 "ai hỏi",
@@ -45,18 +52,16 @@ const texts=[
 "chaos.exe"
 ];
 
-// theo dõi chuột
 document.addEventListener("mousemove",(e)=>{
     mouse.x=e.clientX;
     mouse.y=e.clientY;
 });
 
 // rung màn hình giả
-function shake(){
+setInterval(()=>{
     document.body.style.transform=
-        `translate(${Math.random()*10-5}px,${Math.random()*10-5}px)`;
-}
-setInterval(shake,120);
+        `translate(${Math.random()*8-4}px,${Math.random()*8-4}px)`;
+},120);
 
 // robot voice
 function speak(text){
@@ -71,62 +76,101 @@ function createPopup(isBoss=false){
 
     let box=document.createElement("div");
     box.className="popup";
-    box.innerText=isBoss?"👁 BOSS":"MINION";
+    box.innerText=isBoss?"👁 CHAOS BOSS":"minion";
     document.body.appendChild(box);
 
     box.style.left=Math.random()*window.innerWidth+"px";
     box.style.top=Math.random()*window.innerHeight+"px";
 
-    // đổi chữ + nói
+    // đổi chữ
     setInterval(()=>{
         let t=texts[Math.floor(Math.random()*texts.length)];
         box.innerText=t;
-        if(Math.random()<0.2) speak(t);
+        if(Math.random()<0.15) speak(t);
     },200);
 
-    // zigzag AI né chuột
+    // AI dự đoán chuột
+    let lastMouse={x:0,y:0};
+
     setInterval(()=>{
+        let predictX=mouse.x+(mouse.x-lastMouse.x)*3;
+        let predictY=mouse.y+(mouse.y-lastMouse.y)*3;
+        lastMouse.x=mouse.x;
+        lastMouse.y=mouse.y;
+
         let rect=box.getBoundingClientRect();
-        let dx=mouse.x-rect.left;
-        let dy=mouse.y-rect.top;
+        let dx=predictX-rect.left;
+        let dy=predictY-rect.top;
         let dist=Math.sqrt(dx*dx+dy*dy);
 
-        if(dist<140){
+        if(dist<150){
             box.style.left=
-                mouse.x+(Math.random()*200-100)+"px";
+                predictX+(Math.random()*200-100)+"px";
             box.style.top=
-                mouse.y+(Math.random()*200-100)+"px";
+                predictY+(Math.random()*200-100)+"px";
         }
     },120);
 
-    // teleport sau con trỏ
+    // teleport
     setInterval(()=>{
-        if(Math.random()<0.3){
+        if(Math.random()<0.25){
             box.style.left=(mouse.x-50)+"px";
-            box.style.top=(mouse.y-40)+"px";
+            box.style.top=(mouse.y-30)+"px";
         }
-    },1000);
+    },900);
 
     popups.push(box);
 }
 
-// 👁 boss spawn con
-function spawnLevel(){
+// boss điều khiển minion bay vòng tròn
+function bossControl(){
+    if(popups.length<2) return;
 
-    let count=Math.min(level,100);
+    let boss=popups[0];
+    let rect=boss.getBoundingClientRect();
 
-    for(let i=0;i<count;i++){
+    popups.forEach((p,i)=>{
+        if(i===0) return;
+
+        let angle=Date.now()/500+i;
+        p.style.left=rect.left+Math.cos(angle)*120+"px";
+        p.style.top=rect.top+Math.sin(angle)*120+"px";
+    });
+}
+setInterval(bossControl,30);
+
+// portal spawn
+function spawnPortal(){
+
+    let portal=document.createElement("div");
+    portal.className="portal";
+    document.body.appendChild(portal);
+
+    portal.style.left=Math.random()*window.innerWidth+"px";
+    portal.style.top=Math.random()*window.innerHeight+"px";
+
+    setTimeout(()=>{
         createPopup(false);
+        portal.remove();
+    },600);
+}
+
+// spawn theo level
+function levelSpawn(){
+    let amount=Math.min(level,100);
+
+    for(let i=0;i<amount;i++){
+        spawnPortal();
     }
 }
 
-// boss chính
+// tạo boss
 createPopup(true);
 
-// tăng level mỗi 3s
+// tăng level
 setInterval(()=>{
     level++;
-    spawnLevel();
+    levelSpawn();
 },3000);
 
 </script>
