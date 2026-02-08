@@ -2,96 +2,121 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>REAL POPUP CHAOS</title>
+<title>DEVIL REAL v2</title>
 </head>
 
 <body style="background:black;color:red;font-family:consolas">
-<h2>👹 REAL POPUP CHAOS ENGINE</h2>
-<button onclick="start()">START POPUP</button>
+<h2>👹 DEVIL REAL v2 POPUP ENGINE</h2>
+<button onclick="start()">START DEVIL</button>
 
 <script>
 
 let popups=[];
-let maxPopup=40;
+let maxPop=60;
+let mouse={x:0,y:0};
+
+document.addEventListener("mousemove",e=>{
+mouse.x=e.screenX;
+mouse.y=e.screenY;
+});
 
 function start(){
 
-    // spawn ban đầu
-    for(let i=0;i<5;i++){
-        createPopup(false);
-    }
+createPopup(true);
 
-    // tăng số lượng theo thời gian
-    setInterval(()=>{
-        if(popups.length<maxPopup){
-            createPopup(false);
-        }
-    },2000);
+setInterval(()=>{
+if(popups.length<maxPop){
+createPopup(false);
+}
+},2500);
 }
 
 function createPopup(isBoss){
 
-    let w=window.open("","",
-        "width=240,height=130,left="+
-        Math.random()*800+
-        ",top="+Math.random()*500
-    );
+let w=window.open("","",
+"width=240,height=130,left="+
+Math.random()*800+
+",top="+Math.random()*500
+);
 
-    if(!w) return;
+if(!w) return;
 
-    popups.push(w);
+popups.push(w);
 
-    w.document.write(`
-    <body style="
-    background:black;
-    color:red;
-    font-family:consolas;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:18px;
-    ">
+w.document.write(`
+<body style="
+background:black;
+color:red;
+font-family:consolas;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:18px;
+">
 
-    ai hỏi
+${isBoss?"👁 DEVIL BOSS":"👿 minion"}
 
-    <script>
+<script>
 
-    let words=[
-    "ai hỏi",
-    "gah dayum💔🥀",
-    "lol",
-    "error404",
-    "you have been hacked"
-    ];
+let words=[
+"ai hỏi",
+"gah dayum💔🥀",
+"lol",
+"error404",
+"you have been hacked"
+];
 
-    function speak(t){
-        let u=new SpeechSynthesisUtterance(t);
-        u.pitch=Math.random()*2;
-        u.rate=0.8+Math.random();
-        speechSynthesis.speak(u);
-    }
-
-    // đổi chữ + nói
-    setInterval(()=>{
-        let t=words[Math.floor(Math.random()*words.length)];
-        document.body.innerText=t;
-        if(Math.random()<0.5) speak(t);
-    },500);
-
-    // chạy random siêu nhanh
-    setInterval(()=>{
-        window.moveTo(
-            Math.random()*screen.availWidth,
-            Math.random()*screen.availHeight
-        );
-    },180);
-
-    <\/script>
-
-    </body>
-    `);
+function speak(t){
+let u=new SpeechSynthesisUtterance(t);
+u.pitch=Math.random()*2;
+u.rate=0.7+Math.random();
+speechSynthesis.speak(u);
 }
 
+// random chữ + giọng
+setInterval(()=>{
+let t=words[Math.floor(Math.random()*words.length)];
+document.body.innerText=t;
+if(Math.random()<0.6) speak(t);
+},400);
+
+// zigzag movement + teleport
+setInterval(()=>{
+
+let nx=Math.random()*screen.availWidth;
+let ny=Math.random()*screen.availHeight;
+
+if(Math.random()<0.3){
+nx+=Math.random()*200-100;
+ny+=Math.random()*200-100;
+}
+
+window.moveTo(nx,ny);
+
+},200);
+
+// đóng popup → spawn thêm
+window.addEventListener("beforeunload",()=>{
+try{
+window.opener.postMessage("spawn","*");
+}catch(e){}
+});
+
+<\/script>
+
+</body>
+`);
+}
+
+window.addEventListener("message",e=>{
+if(e.data==="spawn"){
+for(let i=0;i<2;i++){
+if(popups.length<maxPop) createPopup(false);
+}
+}
+});
+
 </script>
+
 </body>
 </html>
