@@ -1,75 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>APOCALYPSE AI FINAL</title>
+<meta charset="utf-8">
+<title>ABSOLUTE APOCALYPSE AI FINAL</title>
+<style>
+body{font-family:Arial;text-align:center;margin-top:60px;background:#000;color:#fff}
+button{padding:14px 20px;font-size:18px;margin:8px}
+</style>
 </head>
+<body>
 
-<body style="background:black;color:white;text-align:center">
-
-<h1>💀 ABSOLUTE CHAOS WEB</h1>
-<button onclick="spawn()">🔥 CHAOS</button>
+<h1>🔥 ABSOLUTE APOCALYPSE AI FINAL 🔥</h1>
+<button onclick="startChaos()">KÍCH HOẠT TẬN THẾ</button>
 
 <script>
-const texts=[
-"ai hỏi ai hỏi 🔊",
-"gah dayum💔🥀",
-"APOCALYPSE AI FINAL",
-"SERVER CHAOS ENGINE"
-];
+const MAX_POP = 200; // chỉnh số popup ở đây
+let pops = [];
+
+function popupHTML(){
+return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;background:black;color:white;text-align:center;overflow:hidden">
+<h3 id="t">ai hỏi</h3>
+
+<script>
+const phrases=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
+const voices=[];
 
 function speak(){
-let msg=new SpeechSynthesisUtterance(
-texts[Math.floor(Math.random()*texts.length)]
-);
-msg.pitch=Math.random()*2;
-msg.rate=1+Math.random();
-speechSynthesis.speak(msg);
+ try{
+  const u=new SpeechSynthesisUtterance(
+    phrases[Math.floor(Math.random()*phrases.length)]
+  );
+  const vs=speechSynthesis.getVoices();
+  if(vs.length>0){
+    u.voice=vs[Math.floor(Math.random()*vs.length)];
+  }
+  speechSynthesis.speak(u);
+ }catch(e){}
 }
+setInterval(speak,1500);
 
-function spawn(){
-
-for(let i=0;i<5;i++){
-
-let w=window.open(
-"",
-"",
-"width=220,height=120"
-);
-
-if(!w) return;
-
-w.document.write(`
-<body style="
-background:black;
-color:red;
-font-size:20px;
-animation:flash 0.2s infinite;
-">
-${texts[Math.floor(Math.random()*texts.length)]}
-</body>
-
-<style>
-@keyframes flash{
-0%{color:red}
-50%{color:yellow}
-100%{color:cyan}
-}
-</style>
-
-<script>
+// đổi màu nhấp nháy
 setInterval(()=>{
-window.moveTo(
-Math.random()*1000,
-Math.random()*600
-);
+ document.body.style.background=
+ "hsl("+Math.random()*360+",100%,20%)";
+ document.getElementById("t").style.color=
+ "hsl("+Math.random()*360+",100%,70%)";
 },200);
-<\/script>
-`);
 
-speak();
+// di chuyển ngẫu nhiên
+setInterval(()=>{
+ try{
+  window.moveTo(
+   Math.random()*(screen.availWidth-200),
+   Math.random()*(screen.availHeight-120)
+  );
+ }catch(e){}
+},60);
+
+// popup sinh con
+setInterval(()=>{
+ if(window.opener){
+  window.opener.postMessage("spawn","*");
+ }
+},6000);
+
+// loa nền meme
+const audio=new Audio("https://www.myinstants.com/media/sounds/vine-boom.mp3");
+setInterval(()=>{audio.play().catch(()=>{});},4000);
+
+// xoay màn hình
+setInterval(()=>{
+ document.body.style.transform=
+ "rotate("+Math.random()*360+"deg)";
+},1500);
+
+<\/script>
+</body>
+</html>
+`;
 }
 
+// tạo popup
+function createPopup(){
+ if(pops.length>=MAX_POP)return;
+ const p=window.open("","","width=260,height=150");
+ if(!p)return;
+ p.document.write(popupHTML());
+ pops.push(p);
+}
+
+// nhận yêu cầu sinh thêm popup
+window.addEventListener("message",(e)=>{
+ if(e.data==="spawn")createPopup();
+});
+
+// chạy tận thế
+function startChaos(){
+ for(let i=0;i<20;i++)createPopup();
+
+ setInterval(()=>{
+  createPopup();
+ },3000);
 }
 </script>
 
