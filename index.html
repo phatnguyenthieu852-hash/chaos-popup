@@ -1,163 +1,134 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="utf-8">
-<title>ULTRA LOCK v2</title>
-<style>
-body{
- background:black;
- color:white;
- text-align:center;
- font-family:Arial;
- margin-top:60px;
-}
-button{padding:14px 20px;font-size:18px;margin:8px}
-</style>
-</head>
-<body>
-
-<h1>👹 ULTRA LOCK v2</h1>
-<button onclick="start()">START</button>
-<button onclick="stopAll()">STOP</button>
-
-<script>
-const W=260,H=150;
-const MAX_POP=25;
-let pops=[];
-let mouse={x:0,y:0},lastMouse={x:0,y:0};
-
-document.addEventListener("mousemove",e=>{
- lastMouse=mouse;
- mouse={x:e.screenX,y:e.screenY};
- pops.forEach(p=>{
-  try{p.postMessage({mouse,lastMouse},"*")}catch{}
- });
-});
-
-function popupHTML(){
-return `
-<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=260,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="UTF-8">
+<title>CHAOS GOD PRO MAX</title>
+
 <style>
-html,body{
- margin:0;
- padding:0;
- width:260px;
- height:150px;
- overflow:hidden;
- background:black;
- color:lime;
- text-align:center;
- font-family:Arial;
+body{
+    margin:0;
+    overflow:hidden;
+    background:black;
+    font-family:consolas;
+    position:relative;
 }
-#t{margin-top:40px}
+
+.popup{
+    position:absolute;
+    width:150px;
+    height:80px;
+    background:#111;
+    border:2px solid red;
+    color:red;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    user-select:none;
+    font-size:12px;
+}
 </style>
 </head>
+
 <body>
-<h3 id="t">ULTRA LOCK v2</h3>
 
 <script>
-const W=260,H=150;
-let mouse={x:0,y:0},lastMouse={x:0,y:0};
 
-window.addEventListener("message",e=>{
- mouse=e.data.mouse||mouse;
- lastMouse=e.data.lastMouse||lastMouse;
+let level=1;
+let popups=[];
+let mouse={x:0,y:0};
+
+const texts=[
+"ai hỏi",
+"gar dayum💔🥀",
+"lol",
+"error404",
+"chaos.exe"
+];
+
+// theo dõi chuột
+document.addEventListener("mousemove",(e)=>{
+    mouse.x=e.clientX;
+    mouse.y=e.clientY;
 });
 
-// ✅ khóa size đúng cách (không spam resize)
-function lockSize(){
- try{
-  if(
-   window.innerWidth>W+40 ||
-   window.innerHeight>H+40
-  ){
-   window.resizeTo(W,H);
-  }
- }catch{}
+// rung màn hình giả
+function shake(){
+    document.body.style.transform=
+        `translate(${Math.random()*10-5}px,${Math.random()*10-5}px)`;
+}
+setInterval(shake,120);
+
+// robot voice
+function speak(text){
+    let msg=new SpeechSynthesisUtterance(text);
+    msg.pitch=Math.random()*2;
+    msg.rate=0.8+Math.random();
+    speechSynthesis.speak(msg);
 }
 
-// chỉ resize khi load xong
-window.addEventListener("load",()=>{
- setTimeout(()=>{
-  try{window.resizeTo(W,H)}catch{}
- },120);
-});
+// tạo popup
+function createPopup(isBoss=false){
 
-// khóa chậm → tránh bug Chrome
-setInterval(lockSize,500);
+    let box=document.createElement("div");
+    box.className="popup";
+    box.innerText=isBoss?"👁 BOSS":"MINION";
+    document.body.appendChild(box);
 
-// chặn fullscreen API
-document.addEventListener("fullscreenchange",()=>{
- try{document.exitFullscreen()}catch{}
-});
+    box.style.left=Math.random()*window.innerWidth+"px";
+    box.style.top=Math.random()*window.innerHeight+"px";
 
-// 🧠 né chuột dự đoán
+    // đổi chữ + nói
+    setInterval(()=>{
+        let t=texts[Math.floor(Math.random()*texts.length)];
+        box.innerText=t;
+        if(Math.random()<0.2) speak(t);
+    },200);
+
+    // zigzag AI né chuột
+    setInterval(()=>{
+        let rect=box.getBoundingClientRect();
+        let dx=mouse.x-rect.left;
+        let dy=mouse.y-rect.top;
+        let dist=Math.sqrt(dx*dx+dy*dy);
+
+        if(dist<140){
+            box.style.left=
+                mouse.x+(Math.random()*200-100)+"px";
+            box.style.top=
+                mouse.y+(Math.random()*200-100)+"px";
+        }
+    },120);
+
+    // teleport sau con trỏ
+    setInterval(()=>{
+        if(Math.random()<0.3){
+            box.style.left=(mouse.x-50)+"px";
+            box.style.top=(mouse.y-40)+"px";
+        }
+    },1000);
+
+    popups.push(box);
+}
+
+// 👁 boss spawn con
+function spawnLevel(){
+
+    let count=Math.min(level,100);
+
+    for(let i=0;i<count;i++){
+        createPopup(false);
+    }
+}
+
+// boss chính
+createPopup(true);
+
+// tăng level mỗi 3s
 setInterval(()=>{
- let sx=window.screenX;
- let sy=window.screenY;
- let vx=mouse.x-lastMouse.x;
- let vy=mouse.y-lastMouse.y;
- let px=mouse.x+vx*4;
- let py=mouse.y+vy*4;
- let dx=sx-px;
- let dy=sy-py;
- let nx=sx+(Math.random()*100-50);
- let ny=sy+(Math.random()*100-50);
- if(Math.hypot(dx,dy)<240){
-  nx=sx+dx*1.5;
-  ny=sy+dy*1.5;
- }
- try{
-  window.moveTo(
-   Math.max(0,Math.min(screen.availWidth-W,nx)),
-   Math.max(0,Math.min(screen.availHeight-H,ny))
-  );
- }catch{}
-},80);
+    level++;
+    spawnLevel();
+},3000);
 
-// 🔊 nói nhẹ
-setInterval(()=>{
- try{
-  const words=["ai hỏi","gah dayum💔🥀","ULTRA LOCK"];
-  let u=new SpeechSynthesisUtterance(
-   words[Math.floor(Math.random()*words.length)]
-  );
-  speechSynthesis.speak(u);
- }catch{}
-},2500);
-
-<\/script>
-</body>
-</html>
-`;
-}
-
-function createPopup(){
- if(pops.length>=MAX_POP)return;
- const p=window.open(
-  "",
-  "",
-  "popup=yes,width=260,height=150,left=120,top=120,resizable=no,scrollbars=no,menubar=no,toolbar=no"
- );
- if(!p)return;
- p.document.write(popupHTML());
- pops.push(p);
-}
-
-function start(){
- for(let i=0;i<5;i++)createPopup();
- window._loop=setInterval(createPopup,8000);
-}
-
-function stopAll(){
- clearInterval(window._loop);
- pops.forEach(p=>{try{p.close()}catch{}});
- pops=[];
-}
 </script>
 
 </body>
