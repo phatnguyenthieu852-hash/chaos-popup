@@ -2,57 +2,65 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>DEVIL ENGINE LEVEL 4</title>
+<title>HELL LOCK ENGINE</title>
 <style>
-body{background:black;color:white;text-align:center;font-family:Arial;margin-top:60px}
-button{padding:14px 20px;font-size:18px;margin:10px}
+body{background:#000;color:#fff;text-align:center;font-family:Arial;margin-top:60px}
+button{padding:15px 22px;font-size:18px;margin:10px}
 </style>
 </head>
 <body>
 
-<h1>👹 DEVIL ENGINE — CHAOS BOSS — INFINITE REPLICATION ☠️</h1>
-<button onclick="startChaos()">KÍCH HOẠT ĐỊA NGỤC</button>
+<h1>👹 HELL LOCK ENGINE 👹</h1>
+<button onclick="startHell()">KÍCH HOẠT HELL LOCK</button>
 
 <script>
-const MAX_POP = 120;
+const MAX_POP=80;
 let pops=[];
 let mouse={x:0,y:0};
 
 document.addEventListener("mousemove",e=>{
  mouse.x=e.screenX;
  mouse.y=e.screenY;
- for(const p of pops){
+ pops.forEach(p=>{
   try{p.postMessage(mouse,"*")}catch{}
- }
+ });
 });
 
 function popupHTML(){
 return `
 <!DOCTYPE html>
 <html>
-<body style="margin:0;background:black;color:red;text-align:center;overflow:hidden;font-family:Arial">
-<h3 id="txt">⚠ SYSTEM HACKED ⚠</h3>
+<body style="margin:0;background:black;color:red;text-align:center;font-family:Arial">
+<h3 id="t">ai hỏi</h3>
 
 <script>
 let mouse={x:0,y:0};
 window.addEventListener("message",e=>mouse=e.data);
 
-// fake virus biến hình
+// ===== HELL LOCK SIZE =====
+const W=260,H=150;
 setInterval(()=>{
- const msgs=[
-  "⚠ VIRUS DETECTED",
-  "ai hỏi",
-  "gah dayum💔🥀",
-  "SYSTEM FAIL",
-  "ERROR 666"
- ];
- document.getElementById("txt").innerText=
- msgs[Math.floor(Math.random()*msgs.length)];
- document.body.style.background=
- "hsl("+Math.random()*360+",100%,20%)";
+ try{
+  window.resizeTo(W,H);
+  window.focus();
+ }catch{}
 },300);
 
-// AI né chuột thật
+// chặn fullscreen
+document.addEventListener("fullscreenchange",()=>{
+ try{document.exitFullscreen()}catch{}
+});
+
+// chữ nhấp nháy địa ngục
+setInterval(()=>{
+ const words=["ai hỏi","gah dayum💔🥀","SYSTEM LOCK","ERROR 666"];
+ document.getElementById("t").innerText=
+ words[Math.floor(Math.random()*words.length)];
+ document.body.style.background=
+ "hsl("+Math.random()*360+",100%,20%)";
+},250);
+
+// né chuột + luôn nhảy lên trên
 setInterval(()=>{
  let sx=window.screenX;
  let sy=window.screenY;
@@ -67,33 +75,27 @@ setInterval(()=>{
  }
  try{
   window.moveTo(
-   Math.max(0,Math.min(screen.availWidth-260,nx)),
-   Math.max(0,Math.min(screen.availHeight-150,ny))
+   Math.max(0,Math.min(screen.availWidth-W,nx)),
+   Math.max(0,Math.min(screen.availHeight-H,ny))
   );
+  window.focus();
  }catch{}
 },40);
 
-// nói AI khác nhau
+// nói loạn
 setInterval(()=>{
  try{
-  const words=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
+  let txt=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
   let u=new SpeechSynthesisUtterance(
-   words[Math.floor(Math.random()*words.length)]
+   txt[Math.floor(Math.random()*txt.length)]
   );
   let v=speechSynthesis.getVoices();
   if(v.length)u.voice=v[Math.floor(Math.random()*v.length)];
   speechSynthesis.speak(u);
  }catch{}
-},1400);
+},1500);
 
-// popup sinh con nhỏ
-setInterval(()=>{
- if(window.opener){
-  window.opener.postMessage("spawn","*");
- }
-},5000);
-
-// đóng = sinh 5
+// đóng = sinh thêm
 window.addEventListener("beforeunload",()=>{
  if(window.opener){
   window.opener.postMessage("explode","*");
@@ -107,22 +109,25 @@ window.addEventListener("beforeunload",()=>{
 
 function createPopup(){
  if(pops.length>=MAX_POP)return;
- const p=window.open("","","width=260,height=150");
+ const p=window.open(
+  "",
+  "",
+  "width=260,height=150,resizable=no,menubar=no,toolbar=no"
+ );
  if(!p)return;
  p.document.write(popupHTML());
  pops.push(p);
 }
 
 window.addEventListener("message",e=>{
- if(e.data==="spawn")createPopup();
  if(e.data==="explode"){
-  for(let i=0;i<5;i++)createPopup();
+  for(let i=0;i<3;i++)createPopup();
  }
 });
 
-function startChaos(){
- for(let i=0;i<15;i++)createPopup();
- setInterval(()=>createPopup(),4000);
+function startHell(){
+ for(let i=0;i<12;i++)createPopup();
+ setInterval(()=>createPopup(),5000);
 }
 </script>
 
