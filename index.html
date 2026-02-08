@@ -2,176 +2,101 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD ULTIMATE</title>
-
-<style>
-body{
-    margin:0;
-    overflow:hidden;
-    background:black;
-    font-family:consolas;
-    color:red;
-}
-
-.popup{
-    position:absolute;
-    width:140px;
-    height:70px;
-    background:#111;
-    border:2px solid red;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:12px;
-    pointer-events:none;
-}
-
-.portal{
-    position:absolute;
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    border:3px solid purple;
-}
-</style>
+<title>CHAOS GOD POPUP</title>
 </head>
 
-<body>
+<body style="background:black;color:red;font-family:consolas">
+
+<h2>🔥 CHAOS GOD POPUP ENGINE</h2>
+<button onclick="startChaos()">START APOCALYPSE</button>
 
 <script>
 
-let mouse={x:0,y:0};
 let popups=[];
 let level=1;
 
-const texts=[
-"ai hỏi",
-"gar dayum💔🥀",
-"lol",
-"error404",
-"chaos.exe"
-];
+function startChaos(){
 
-document.addEventListener("mousemove",(e)=>{
-    mouse.x=e.clientX;
-    mouse.y=e.clientY;
-});
+    // phải click mới mở popup được
+    createBoss();
 
-// rung màn hình giả
-setInterval(()=>{
-    document.body.style.transform=
-        `translate(${Math.random()*8-4}px,${Math.random()*8-4}px)`;
-},120);
-
-// robot voice
-function speak(text){
-    let msg=new SpeechSynthesisUtterance(text);
-    msg.pitch=Math.random()*2;
-    msg.rate=0.8+Math.random();
-    speechSynthesis.speak(msg);
+    setInterval(()=>{
+        level++;
+        spawnLevel();
+    },3000);
 }
 
-// tạo popup
+function createBoss(){
+    createPopup(true);
+}
+
 function createPopup(isBoss=false){
 
-    let box=document.createElement("div");
-    box.className="popup";
-    box.innerText=isBoss?"👁 CHAOS BOSS":"minion";
-    document.body.appendChild(box);
+    let w=window.open("",
+        "",
+        "width=220,height=120,left="+
+        Math.random()*800+
+        ",top="+Math.random()*500
+    );
 
-    box.style.left=Math.random()*window.innerWidth+"px";
-    box.style.top=Math.random()*window.innerHeight+"px";
+    if(!w) return;
 
-    // đổi chữ
-    setInterval(()=>{
-        let t=texts[Math.floor(Math.random()*texts.length)];
-        box.innerText=t;
-        if(Math.random()<0.15) speak(t);
-    },200);
+    popups.push(w);
 
-    // AI dự đoán chuột
-    let lastMouse={x:0,y:0};
+    w.document.write(`
+        <body style="
+        background:black;
+        color:red;
+        font-family:consolas;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        ">
+        ${isBoss?"👁 CHAOS BOSS":"minion"}
+        <script>
 
-    setInterval(()=>{
-        let predictX=mouse.x+(mouse.x-lastMouse.x)*3;
-        let predictY=mouse.y+(mouse.y-lastMouse.y)*3;
-        lastMouse.x=mouse.x;
-        lastMouse.y=mouse.y;
+        let texts=[
+        "ai hỏi",
+        "gar dayum💔🥀",
+        "lol",
+        "error404"
+        ];
 
-        let rect=box.getBoundingClientRect();
-        let dx=predictX-rect.left;
-        let dy=predictY-rect.top;
-        let dist=Math.sqrt(dx*dx+dy*dy);
-
-        if(dist<150){
-            box.style.left=
-                predictX+(Math.random()*200-100)+"px";
-            box.style.top=
-                predictY+(Math.random()*200-100)+"px";
+        function speak(t){
+            let msg=new SpeechSynthesisUtterance(t);
+            msg.pitch=Math.random()*2;
+            msg.rate=0.8+Math.random();
+            speechSynthesis.speak(msg);
         }
-    },120);
 
-    // teleport
-    setInterval(()=>{
-        if(Math.random()<0.25){
-            box.style.left=(mouse.x-50)+"px";
-            box.style.top=(mouse.y-30)+"px";
-        }
-    },900);
+        // nói liên tục
+        setInterval(()=>{
+            let t=texts[Math.floor(Math.random()*texts.length)];
+            document.body.innerText=t;
+            if(Math.random()<0.4) speak(t);
+        },400);
 
-    popups.push(box);
+        // di chuyển random
+        setInterval(()=>{
+            window.moveTo(
+                Math.random()*screen.width,
+                Math.random()*screen.height
+            );
+        },200);
+
+        </script>
+        </body>
+    `);
 }
 
-// boss điều khiển minion bay vòng tròn
-function bossControl(){
-    if(popups.length<2) return;
+function spawnLevel(){
 
-    let boss=popups[0];
-    let rect=boss.getBoundingClientRect();
-
-    popups.forEach((p,i)=>{
-        if(i===0) return;
-
-        let angle=Date.now()/500+i;
-        p.style.left=rect.left+Math.cos(angle)*120+"px";
-        p.style.top=rect.top+Math.sin(angle)*120+"px";
-    });
-}
-setInterval(bossControl,30);
-
-// portal spawn
-function spawnPortal(){
-
-    let portal=document.createElement("div");
-    portal.className="portal";
-    document.body.appendChild(portal);
-
-    portal.style.left=Math.random()*window.innerWidth+"px";
-    portal.style.top=Math.random()*window.innerHeight+"px";
-
-    setTimeout(()=>{
-        createPopup(false);
-        portal.remove();
-    },600);
-}
-
-// spawn theo level
-function levelSpawn(){
-    let amount=Math.min(level,100);
+    let amount=Math.min(level,10);
 
     for(let i=0;i<amount;i++){
-        spawnPortal();
+        createPopup(false);
     }
 }
-
-// tạo boss
-createPopup(true);
-
-// tăng level
-setInterval(()=>{
-    level++;
-    levelSpawn();
-},3000);
 
 </script>
 
