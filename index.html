@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>APOCALYPSE AI FINAL</title>
+</head>
+
+<body style="background:black;color:white;text-align:center">
+
+<h1>💀 ABSOLUTE CHAOS WEB</h1>
+<button onclick="spawn()">🔥 CHAOS</button>
+
+<script>
+const texts=[
+"ai hỏi ai hỏi 🔊",
+"gah dayum💔🥀",
+"APOCALYPSE AI FINAL",
+"SERVER CHAOS ENGINE"
+];
+
+function speak(){
+let msg=new SpeechSynthesisUtterance(
+texts[Math.floor(Math.random()*texts.length)]
+);
+msg.pitch=Math.random()*2;
+msg.rate=1+Math.random();
+speechSynthesis.speak(msg);
+}
+
+function spawn(){
+
+for(let i=0;i<5;i++){
+
+let w=window.open(
+"",
+"",
+"width=220,height=120"
+);
+
+if(!w) return;
+
+w.document.write(`
+<body style="
+background:black;
+color:red;
+font-size:20px;
+animation:flash 0.2s infinite;
+">
+${texts[Math.floor(Math.random()*texts.length)]}
+</body>
+
+<style>
+@keyframes flash{
+0%{color:red}
+50%{color:yellow}
+100%{color:cyan}
+}
+</style>
+
+<script>
+setInterval(()=>{
+window.moveTo(
+Math.random()*1000,
+Math.random()*600
+);
+},200);
+<\/script>
+`);
+
+speak();
+}
+
+}
+</script>
+
+</body>
+</html>
