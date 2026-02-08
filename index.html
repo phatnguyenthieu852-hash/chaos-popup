@@ -2,27 +2,28 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>HELL LOCK ENGINE</title>
+<title>CHAOS GOD ENGINE</title>
 <style>
-body{background:#000;color:#fff;text-align:center;font-family:Arial;margin-top:60px}
-button{padding:15px 22px;font-size:18px;margin:10px}
+body{background:black;color:white;text-align:center;font-family:Arial;margin-top:60px}
+button{padding:16px 24px;font-size:18px}
 </style>
 </head>
 <body>
 
-<h1>👹 HELL LOCK ENGINE 👹</h1>
-<button onclick="startHell()">KÍCH HOẠT HELL LOCK</button>
+<h1>👑 CHAOS GOD ENGINE 👑</h1>
+<button onclick="startChaos()">START CHAOS GOD</button>
 
 <script>
-const MAX_POP=80;
+const MAX_POP=50;
 let pops=[];
 let mouse={x:0,y:0};
+let lastMouse={x:0,y:0};
 
 document.addEventListener("mousemove",e=>{
- mouse.x=e.screenX;
- mouse.y=e.screenY;
+ lastMouse=mouse;
+ mouse={x:e.screenX,y:e.screenY};
  pops.forEach(p=>{
-  try{p.postMessage(mouse,"*")}catch{}
+  try{p.postMessage({mouse,lastMouse},"*")}catch{}
  });
 });
 
@@ -30,77 +31,98 @@ function popupHTML(){
 return `
 <!DOCTYPE html>
 <html>
-<body style="margin:0;background:black;color:red;text-align:center;font-family:Arial">
-<h3 id="t">ai hỏi</h3>
+<body style="margin:0;background:black;color:lime;text-align:center;font-family:Arial">
+<h3 id="t">CHAOS GOD</h3>
 
 <script>
-let mouse={x:0,y:0};
-window.addEventListener("message",e=>mouse=e.data);
-
-// ===== HELL LOCK SIZE =====
 const W=260,H=150;
-setInterval(()=>{
- try{
-  window.resizeTo(W,H);
-  window.focus();
- }catch{}
-},300);
+let mouse={x:0,y:0},lastMouse={x:0,y:0};
 
-// chặn fullscreen
-document.addEventListener("fullscreenchange",()=>{
- try{document.exitFullscreen()}catch{}
+window.addEventListener("message",e=>{
+ mouse=e.data.mouse||mouse;
+ lastMouse=e.data.lastMouse||lastMouse;
 });
 
-// chữ nhấp nháy địa ngục
+// 🔒 khóa kích thước chống fullscreen
 setInterval(()=>{
- const words=["ai hỏi","gah dayum💔🥀","SYSTEM LOCK","ERROR 666"];
- document.getElementById("t").innerText=
- words[Math.floor(Math.random()*words.length)];
- document.body.style.background=
- "hsl("+Math.random()*360+",100%,20%)";
-},250);
+ try{window.resizeTo(W,H)}catch{}
+},200);
 
-// né chuột + luôn nhảy lên trên
+// 👑 boss đổi nội dung
+setInterval(()=>{
+ const txt=[
+  "ai hỏi",
+  "gah dayum💔🥀",
+  "CHAOS GOD",
+  "SYSTEM UPDATE 1%",
+  "ERROR 999"
+ ];
+ document.getElementById("t").innerText=
+ txt[Math.floor(Math.random()*txt.length)];
+ document.body.style.background=
+ "hsl("+Math.random()*360+",80%,20%)";
+},300);
+
+// 🧠 AI hunter đoán hướng chuột trước
 setInterval(()=>{
  let sx=window.screenX;
  let sy=window.screenY;
- let dx=sx-mouse.x;
- let dy=sy-mouse.y;
- let dist=Math.sqrt(dx*dx+dy*dy);
- let nx=sx+(Math.random()*200-100);
- let ny=sy+(Math.random()*200-100);
- if(dist<300){
-  nx=sx+dx*2;
-  ny=sy+dy*2;
+
+ let vx=mouse.x-lastMouse.x;
+ let vy=mouse.y-lastMouse.y;
+
+ let predictX=mouse.x+vx*5;
+ let predictY=mouse.y+vy*5;
+
+ let dx=sx-predictX;
+ let dy=sy-predictY;
+
+ let nx=sx+(Math.random()*120-60);
+ let ny=sy+(Math.random()*120-60);
+
+ if(Math.sqrt(dx*dx+dy*dy)<300){
+  nx=sx+dx*1.8;
+  ny=sy+dy*1.8;
  }
+
  try{
   window.moveTo(
    Math.max(0,Math.min(screen.availWidth-W,nx)),
    Math.max(0,Math.min(screen.availHeight-H,ny))
   );
-  window.focus();
  }catch{}
-},40);
+},60);
 
-// nói loạn
+// 🔥 teleport ngẫu nhiên
 setInterval(()=>{
  try{
-  let txt=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
+  window.moveTo(
+   Math.random()*(screen.availWidth-W),
+   Math.random()*(screen.availHeight-H)
+  );
+ }catch{}
+},6000);
+
+// 👁 sinh popup con
+setInterval(()=>{
+ if(window.opener){
+  window.opener.postMessage("spawn","*");
+ }
+},9000);
+
+// 🔊 nói loạn
+setInterval(()=>{
+ try{
+  let words=["ai hỏi","gah dayum💔🥀","CHAOS GOD"];
   let u=new SpeechSynthesisUtterance(
-   txt[Math.floor(Math.random()*txt.length)]
+   words[Math.floor(Math.random()*words.length)]
   );
   let v=speechSynthesis.getVoices();
   if(v.length)u.voice=v[Math.floor(Math.random()*v.length)];
   speechSynthesis.speak(u);
  }catch{}
-},1500);
+},2000);
 
-// đóng = sinh thêm
-window.addEventListener("beforeunload",()=>{
- if(window.opener){
-  window.opener.postMessage("explode","*");
- }
-});
 <\/script>
 </body>
 </html>
@@ -120,14 +142,12 @@ function createPopup(){
 }
 
 window.addEventListener("message",e=>{
- if(e.data==="explode"){
-  for(let i=0;i<3;i++)createPopup();
- }
+ if(e.data==="spawn")createPopup();
 });
 
-function startHell(){
- for(let i=0;i<12;i++)createPopup();
- setInterval(()=>createPopup(),5000);
+function startChaos(){
+ for(let i=0;i<10;i++)createPopup();
+ setInterval(createPopup,7000);
 }
 </script>
 
