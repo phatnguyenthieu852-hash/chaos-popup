@@ -2,126 +2,97 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>CHAOS GOD ENGINE</title>
+<title>ULTRA LOCK</title>
 <style>
-body{background:black;color:white;text-align:center;font-family:Arial;margin-top:60px}
-button{padding:16px 24px;font-size:18px}
+body{background:#000;color:#fff;text-align:center;font-family:Arial;margin-top:60px}
+button{padding:14px 20px;font-size:18px;margin:8px}
 </style>
 </head>
 <body>
 
-<h1>👑 CHAOS GOD ENGINE 👑</h1>
-<button onclick="startChaos()">START CHAOS GOD</button>
+<h1>👹 ULTRA LOCK</h1>
+<button onclick="start()">START</button>
+<button onclick="stopAll()">STOP</button>
 
 <script>
-const MAX_POP=50;
+const W=260,H=150;
+const MAX_POP=30;
 let pops=[];
-let mouse={x:0,y:0};
-let lastMouse={x:0,y:0};
+let mouse={x:0,y:0}, lastMouse={x:0,y:0};
 
 document.addEventListener("mousemove",e=>{
- lastMouse=mouse;
- mouse={x:e.screenX,y:e.screenY};
- pops.forEach(p=>{
-  try{p.postMessage({mouse,lastMouse},"*")}catch{}
- });
+  lastMouse=mouse;
+  mouse={x:e.screenX,y:e.screenY};
+  pops.forEach(p=>{ try{p.postMessage({mouse,lastMouse},"*")}catch{} });
 });
 
 function popupHTML(){
 return `
 <!DOCTYPE html>
 <html>
-<body style="margin:0;background:black;color:lime;text-align:center;font-family:Arial">
-<h3 id="t">CHAOS GOD</h3>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=260, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+html,body{
+  margin:0;padding:0;width:260px;height:150px;overflow:hidden;
+  background:#000;color:#0f0;text-align:center;font-family:Arial;
+  -ms-content-zooming:none; touch-action:none;
+}
+#t{margin-top:40px}
+</style>
+</head>
+<body>
+<h3 id="t">ULTRA LOCK</h3>
 
 <script>
 const W=260,H=150;
-let mouse={x:0,y:0},lastMouse={x:0,y:0};
-
+let mouse={x:0,y:0}, lastMouse={x:0,y:0};
 window.addEventListener("message",e=>{
- mouse=e.data.mouse||mouse;
- lastMouse=e.data.lastMouse||lastMouse;
+  mouse=e.data.mouse||mouse;
+  lastMouse=e.data.lastMouse||lastMouse;
 });
 
-// 🔒 khóa kích thước chống fullscreen
+// 🔒 khóa kích thước & chống fullscreen/zoom
+function ultraLock(){
+  try{
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+  }catch(e){}
+  try{
+    if(window.outerWidth!==W || window.outerHeight!==H){
+      window.resizeTo(W,H);
+    }
+  }catch(e){}
+}
+setInterval(ultraLock,120);
+
+// 🧠 né chuột (dựa trên dự đoán hướng)
 setInterval(()=>{
- try{window.resizeTo(W,H)}catch{}
-},200);
-
-// 👑 boss đổi nội dung
-setInterval(()=>{
- const txt=[
-  "ai hỏi",
-  "gah dayum💔🥀",
-  "CHAOS GOD",
-  "SYSTEM UPDATE 1%",
-  "ERROR 999"
- ];
- document.getElementById("t").innerText=
- txt[Math.floor(Math.random()*txt.length)];
- document.body.style.background=
- "hsl("+Math.random()*360+",80%,20%)";
-},300);
-
-// 🧠 AI hunter đoán hướng chuột trước
-setInterval(()=>{
- let sx=window.screenX;
- let sy=window.screenY;
-
- let vx=mouse.x-lastMouse.x;
- let vy=mouse.y-lastMouse.y;
-
- let predictX=mouse.x+vx*5;
- let predictY=mouse.y+vy*5;
-
- let dx=sx-predictX;
- let dy=sy-predictY;
-
- let nx=sx+(Math.random()*120-60);
- let ny=sy+(Math.random()*120-60);
-
- if(Math.sqrt(dx*dx+dy*dy)<300){
-  nx=sx+dx*1.8;
-  ny=sy+dy*1.8;
- }
-
- try{
-  window.moveTo(
-   Math.max(0,Math.min(screen.availWidth-W,nx)),
-   Math.max(0,Math.min(screen.availHeight-H,ny))
-  );
- }catch{}
+  let sx=window.screenX, sy=window.screenY;
+  let vx=mouse.x-lastMouse.x, vy=mouse.y-lastMouse.y;
+  let px=mouse.x+vx*4, py=mouse.y+vy*4; // dự đoán
+  let dx=sx-px, dy=sy-py;
+  let nx=sx+(Math.random()*120-60);
+  let ny=sy+(Math.random()*120-60);
+  if(Math.hypot(dx,dy)<260){ nx=sx+dx*1.6; ny=sy+dy*1.6; }
+  try{
+    window.moveTo(
+      Math.max(0,Math.min(screen.availWidth-W,nx)),
+      Math.max(0,Math.min(screen.availHeight-H,ny))
+    );
+  }catch(e){}
 },60);
 
-// 🔥 teleport ngẫu nhiên
+// 🔊 nói ngẫu nhiên
 setInterval(()=>{
- try{
-  window.moveTo(
-   Math.random()*(screen.availWidth-W),
-   Math.random()*(screen.availHeight-H)
-  );
- }catch{}
-},6000);
-
-// 👁 sinh popup con
-setInterval(()=>{
- if(window.opener){
-  window.opener.postMessage("spawn","*");
- }
-},9000);
-
-// 🔊 nói loạn
-setInterval(()=>{
- try{
-  let words=["ai hỏi","gah dayum💔🥀","CHAOS GOD"];
-  let u=new SpeechSynthesisUtterance(
-   words[Math.floor(Math.random()*words.length)]
-  );
-  let v=speechSynthesis.getVoices();
-  if(v.length)u.voice=v[Math.floor(Math.random()*v.length)];
-  speechSynthesis.speak(u);
- }catch{}
-},2000);
+  try{
+    const words=["ai hỏi","gah dayum💔🥀","ULTRA LOCK"];
+    let u=new SpeechSynthesisUtterance(words[Math.floor(Math.random()*words.length)]);
+    let v=speechSynthesis.getVoices();
+    if(v.length)u.voice=v[Math.floor(Math.random()*v.length)];
+    speechSynthesis.speak(u);
+  }catch(e){}
+},2200);
 
 <\/script>
 </body>
@@ -130,24 +101,30 @@ setInterval(()=>{
 }
 
 function createPopup(){
- if(pops.length>=MAX_POP)return;
- const p=window.open(
-  "",
-  "",
-  "width=260,height=150,resizable=no,menubar=no,toolbar=no"
- );
- if(!p)return;
- p.document.write(popupHTML());
- pops.push(p);
+  if(pops.length>=MAX_POP) return;
+  const p=window.open(
+    "",
+    "",
+    "popup=yes,width=260,height=150,left=120,top=120,resizable=no,menubar=no,toolbar=no,location=no,status=no,scrollbars=no"
+  );
+  if(!p) return;
+  try{
+    p.document.open();
+    p.document.write(popupHTML());
+    p.document.close();
+  }catch(e){}
+  pops.push(p);
 }
 
-window.addEventListener("message",e=>{
- if(e.data==="spawn")createPopup();
-});
+function start(){
+  for(let i=0;i<6;i++) createPopup();
+  window._loop=setInterval(createPopup,7000);
+}
 
-function startChaos(){
- for(let i=0;i<10;i++)createPopup();
- setInterval(createPopup,7000);
+function stopAll(){
+  clearInterval(window._loop);
+  pops.forEach(p=>{ try{p.close()}catch{} });
+  pops=[];
 }
 </script>
 
