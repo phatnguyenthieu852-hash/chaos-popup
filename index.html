@@ -2,39 +2,37 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD POPUP</title>
+<title>REAL POPUP CHAOS</title>
 </head>
 
 <body style="background:black;color:red;font-family:consolas">
-
-<h2>🔥 CHAOS GOD POPUP ENGINE</h2>
-<button onclick="startChaos()">START APOCALYPSE</button>
+<h2>👹 REAL POPUP CHAOS ENGINE</h2>
+<button onclick="start()">START POPUP</button>
 
 <script>
 
 let popups=[];
-let level=1;
+let maxPopup=40;
 
-function startChaos(){
+function start(){
 
-    // phải click mới mở popup được
-    createBoss();
+    // spawn ban đầu
+    for(let i=0;i<5;i++){
+        createPopup(false);
+    }
 
+    // tăng số lượng theo thời gian
     setInterval(()=>{
-        level++;
-        spawnLevel();
-    },3000);
+        if(popups.length<maxPopup){
+            createPopup(false);
+        }
+    },2000);
 }
 
-function createBoss(){
-    createPopup(true);
-}
+function createPopup(isBoss){
 
-function createPopup(isBoss=false){
-
-    let w=window.open("",
-        "",
-        "width=220,height=120,left="+
+    let w=window.open("","",
+        "width=240,height=130,left="+
         Math.random()*800+
         ",top="+Math.random()*500
     );
@@ -44,61 +42,56 @@ function createPopup(isBoss=false){
     popups.push(w);
 
     w.document.write(`
-        <body style="
-        background:black;
-        color:red;
-        font-family:consolas;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        ">
-        ${isBoss?"👁 CHAOS BOSS":"minion"}
-        <script>
+    <body style="
+    background:black;
+    color:red;
+    font-family:consolas;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:18px;
+    ">
 
-        let texts=[
-        "ai hỏi",
-        "gar dayum💔🥀",
-        "lol",
-        "error404"
-        ];
+    ai hỏi
 
-        function speak(t){
-            let msg=new SpeechSynthesisUtterance(t);
-            msg.pitch=Math.random()*2;
-            msg.rate=0.8+Math.random();
-            speechSynthesis.speak(msg);
-        }
+    <script>
 
-        // nói liên tục
-        setInterval(()=>{
-            let t=texts[Math.floor(Math.random()*texts.length)];
-            document.body.innerText=t;
-            if(Math.random()<0.4) speak(t);
-        },400);
+    let words=[
+    "ai hỏi",
+    "gah dayum💔🥀",
+    "lol",
+    "error404",
+    "you have been hacked"
+    ];
 
-        // di chuyển random
-        setInterval(()=>{
-            window.moveTo(
-                Math.random()*screen.width,
-                Math.random()*screen.height
-            );
-        },200);
+    function speak(t){
+        let u=new SpeechSynthesisUtterance(t);
+        u.pitch=Math.random()*2;
+        u.rate=0.8+Math.random();
+        speechSynthesis.speak(u);
+    }
 
-        </script>
-        </body>
+    // đổi chữ + nói
+    setInterval(()=>{
+        let t=words[Math.floor(Math.random()*words.length)];
+        document.body.innerText=t;
+        if(Math.random()<0.5) speak(t);
+    },500);
+
+    // chạy random siêu nhanh
+    setInterval(()=>{
+        window.moveTo(
+            Math.random()*screen.availWidth,
+            Math.random()*screen.availHeight
+        );
+    },180);
+
+    <\/script>
+
+    </body>
     `);
 }
 
-function spawnLevel(){
-
-    let amount=Math.min(level,10);
-
-    for(let i=0;i<amount;i++){
-        createPopup(false);
-    }
-}
-
 </script>
-
 </body>
 </html>
