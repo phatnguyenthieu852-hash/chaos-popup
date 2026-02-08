@@ -2,88 +2,109 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<title>ABSOLUTE APOCALYPSE AI FINAL</title>
+<title>DEVIL ENGINE LEVEL 4</title>
 <style>
-body{font-family:Arial;text-align:center;margin-top:60px;background:#000;color:#fff}
-button{padding:14px 20px;font-size:18px;margin:8px}
+body{background:black;color:white;text-align:center;font-family:Arial;margin-top:60px}
+button{padding:14px 20px;font-size:18px;margin:10px}
 </style>
 </head>
 <body>
 
-<h1>🔥 ABSOLUTE APOCALYPSE AI FINAL 🔥</h1>
-<button onclick="startChaos()">KÍCH HOẠT TẬN THẾ</button>
+<h1>👹 DEVIL ENGINE — CHAOS BOSS — INFINITE REPLICATION ☠️</h1>
+<button onclick="startChaos()">KÍCH HOẠT ĐỊA NGỤC</button>
 
 <script>
-const MAX_POP = 200; // chỉnh số popup ở đây
-let pops = [];
+const MAX_POP = 120;
+let pops=[];
+let mouse={x:0,y:0};
+
+document.addEventListener("mousemove",e=>{
+ mouse.x=e.screenX;
+ mouse.y=e.screenY;
+ for(const p of pops){
+  try{p.postMessage(mouse,"*")}catch{}
+ }
+});
 
 function popupHTML(){
 return `
 <!DOCTYPE html>
 <html>
-<body style="margin:0;background:black;color:white;text-align:center;overflow:hidden">
-<h3 id="t">ai hỏi</h3>
+<body style="margin:0;background:black;color:red;text-align:center;overflow:hidden;font-family:Arial">
+<h3 id="txt">⚠ SYSTEM HACKED ⚠</h3>
 
 <script>
-const phrases=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
-const voices=[];
+let mouse={x:0,y:0};
+window.addEventListener("message",e=>mouse=e.data);
 
-function speak(){
- try{
-  const u=new SpeechSynthesisUtterance(
-    phrases[Math.floor(Math.random()*phrases.length)]
-  );
-  const vs=speechSynthesis.getVoices();
-  if(vs.length>0){
-    u.voice=vs[Math.floor(Math.random()*vs.length)];
-  }
-  speechSynthesis.speak(u);
- }catch(e){}
-}
-setInterval(speak,1500);
-
-// đổi màu nhấp nháy
+// fake virus biến hình
 setInterval(()=>{
+ const msgs=[
+  "⚠ VIRUS DETECTED",
+  "ai hỏi",
+  "gah dayum💔🥀",
+  "SYSTEM FAIL",
+  "ERROR 666"
+ ];
+ document.getElementById("txt").innerText=
+ msgs[Math.floor(Math.random()*msgs.length)];
  document.body.style.background=
  "hsl("+Math.random()*360+",100%,20%)";
- document.getElementById("t").style.color=
- "hsl("+Math.random()*360+",100%,70%)";
-},200);
+},300);
 
-// di chuyển ngẫu nhiên
+// AI né chuột thật
 setInterval(()=>{
+ let sx=window.screenX;
+ let sy=window.screenY;
+ let dx=sx-mouse.x;
+ let dy=sy-mouse.y;
+ let dist=Math.sqrt(dx*dx+dy*dy);
+ let nx=sx+(Math.random()*200-100);
+ let ny=sy+(Math.random()*200-100);
+ if(dist<300){
+  nx=sx+dx*2;
+  ny=sy+dy*2;
+ }
  try{
   window.moveTo(
-   Math.random()*(screen.availWidth-200),
-   Math.random()*(screen.availHeight-120)
+   Math.max(0,Math.min(screen.availWidth-260,nx)),
+   Math.max(0,Math.min(screen.availHeight-150,ny))
   );
- }catch(e){}
-},60);
+ }catch{}
+},40);
 
-// popup sinh con
+// nói AI khác nhau
+setInterval(()=>{
+ try{
+  const words=["ai hỏi","gah dayum💔🥀","ai hỏi ai hỏi"];
+  let u=new SpeechSynthesisUtterance(
+   words[Math.floor(Math.random()*words.length)]
+  );
+  let v=speechSynthesis.getVoices();
+  if(v.length)u.voice=v[Math.floor(Math.random()*v.length)];
+  speechSynthesis.speak(u);
+ }catch{}
+},1400);
+
+// popup sinh con nhỏ
 setInterval(()=>{
  if(window.opener){
   window.opener.postMessage("spawn","*");
  }
-},6000);
+},5000);
 
-// loa nền meme
-const audio=new Audio("https://www.myinstants.com/media/sounds/vine-boom.mp3");
-setInterval(()=>{audio.play().catch(()=>{});},4000);
-
-// xoay màn hình
-setInterval(()=>{
- document.body.style.transform=
- "rotate("+Math.random()*360+"deg)";
-},1500);
-
+// đóng = sinh 5
+window.addEventListener("beforeunload",()=>{
+ if(window.opener){
+  window.opener.postMessage("explode","*");
+ }
+});
 <\/script>
 </body>
 </html>
 `;
 }
 
-// tạo popup
 function createPopup(){
  if(pops.length>=MAX_POP)return;
  const p=window.open("","","width=260,height=150");
@@ -92,18 +113,16 @@ function createPopup(){
  pops.push(p);
 }
 
-// nhận yêu cầu sinh thêm popup
-window.addEventListener("message",(e)=>{
+window.addEventListener("message",e=>{
  if(e.data==="spawn")createPopup();
+ if(e.data==="explode"){
+  for(let i=0;i<5;i++)createPopup();
+ }
 });
 
-// chạy tận thế
 function startChaos(){
- for(let i=0;i<20;i++)createPopup();
-
- setInterval(()=>{
-  createPopup();
- },3000);
+ for(let i=0;i<15;i++)createPopup();
+ setInterval(()=>createPopup(),4000);
 }
 </script>
 
