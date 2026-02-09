@@ -2,125 +2,101 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>CHAOS GOD CLOSE=3</title>
+<title>DIMENSION GOD FAST</title>
 </head>
+<body style="background:black;color:red;font-family:Arial;text-align:center">
 
-<body style="background:black;color:red;font-family:consolas">
-<h2>👹 CHAOS GOD — CLOSE 1 = SPAWN 3</h2>
-<button onclick="stopAll()">🛑 STOP ALL (ESC)</button>
+<h1>👁 DIMENSION GOD — FAST SPAWN</h1>
+<button onclick="start()">🔥 START</button>
+<button onclick="stop()">🛑 STOP</button>
 
 <script>
 let popups=[];
-let running=true;
-let maxPop=150;
+let running=false;
+let stopped=false;
+const MAX_POPUPS=80;     // giới hạn an toàn
 
-// auto chạy
-window.onload=()=>{
-    for(let i=0;i<10;i++) createPopup(true);
-
-    setInterval(()=>{
-        if(!running) return;
-        if(popups.length<maxPop) createPopup(false);
-    },1000);
-};
-
-// ESC = tắt khẩn cấp
-document.addEventListener("keydown",e=>{
-    if(e.key==="Escape") stopAll();
-});
-
-function stopAll(){
-    running=false;
-    popups.forEach(p=>{
-        try{
-            p.postMessage("forceClose","*");
-            p.close();
-        }catch(e){}
-    });
-    popups=[];
-    speechSynthesis.cancel();
-    alert("🛑 Đã tắt toàn bộ CHAOS");
+function robotSpeak(){
+  const words=["ai hỏi","gar dayum","lol","error404","you have been hacked"];
+  let msg=new SpeechSynthesisUtterance(
+    words[Math.floor(Math.random()*words.length)]
+  );
+  msg.pitch=Math.random()*1.8+0.2;
+  msg.rate=Math.random()*0.6+0.7;
+  speechSynthesis.speak(msg);
 }
 
-function createPopup(isBoss){
+function createPopup(x,y){
+  if(popups.length>=MAX_POPUPS) return;
 
-    let w=window.open("","",
-    "width=240,height=130,left="+
-    Math.random()*800+
-    ",top="+Math.random()*500);
+  let w=window.open("","","width=220,height=140,left="+x+",top="+y+",resizable=yes");
+  if(!w) return;
+  popups.push(w);
 
-    if(!w) return;
-
-    popups.push(w);
-
-    w.document.write(`
-    <body style="
-    background:black;
-    color:red;
-    font-family:consolas;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:18px;
-    ">
-    ${isBoss?"👁 CHAOS BOSS":"👿 MINION"}
+  w.document.write(`
+  <body style="background:black;color:red;text-align:center;font-family:Arial">
+    <h3 id="t">ai hỏi</h3>
 
     <script>
-    let words=[
-    "ai hỏi",
-    "gah dayum💔🥀",
-    "lol",
-    "error404",
-    "you have been hacked"
-    ];
+      const words=["ai hỏi","gar dayum","lol","error404","you have been hacked"];
 
-    function speak(t){
-        let u=new SpeechSynthesisUtterance(t);
-        u.pitch=Math.random()*2;
-        u.rate=0.7+Math.random();
-        speechSynthesis.speak(u);
-    }
+      // đổi chữ nhanh
+      setInterval(()=>{
+        document.getElementById("t").innerText =
+          words[Math.floor(Math.random()*words.length)];
+      },200);
 
-    setInterval(()=>{
-        let t=words[Math.floor(Math.random()*words.length)];
-        document.body.innerText=t;
-        if(Math.random()<0.5) speak(t);
-    },400);
+      // di chuyển ngẫu nhiên (không fullscreen)
+      setInterval(()=>{
+        try{ window.moveBy(Math.random()*60-30, Math.random()*60-30); }catch(e){}
+        try{ if(window.outerWidth>260||window.outerHeight>180){window.resizeTo(220,140);} }catch(e){}
+      },120);
 
-    setInterval(()=>{
-        window.moveTo(
-            Math.random()*screen.availWidth,
-            Math.random()*screen.availHeight
-        );
-    },200);
+      // 👁 sinh popup con nhanh hơn (~1.5s)
+      setInterval(()=>{
+        if(window.opener && !window.opener.stopped){
+          window.opener.spawnChild();
+        }
+      },1500);
 
-    // đóng 1 = spawn 3
-    window.addEventListener("beforeunload",()=>{
-        try{
-            window.opener.postMessage("spawn3","*");
-        }catch(e){}
-    });
-
-    // nhận lệnh đóng khẩn cấp
-    window.addEventListener("message",(e)=>{
-        if(e.data==="forceClose") window.close();
-    });
-
+      // 💀 đóng 1 sinh 2 (demo safe)
+      window.onbeforeunload=function(){
+        if(window.opener && !window.opener.stopped){
+          window.opener.spawnChild();
+          window.opener.spawnChild();
+        }
+      };
     <\/script>
-    </body>
-    `);
+  </body>
+  `);
+
+  robotSpeak();
 }
 
-// main nhận lệnh spawn3
-window.addEventListener("message",e=>{
-    if(e.data==="spawn3" && running){
-        for(let i=0;i<3;i++){
-            if(popups.length<maxPop){
-                createPopup(false);
-            }
-        }
-    }
-});
+function spawnChild(){
+  createPopup(
+    Math.random()* (screen.availWidth-240) + 20,
+    Math.random()* (screen.availHeight-180) + 20
+  );
+}
+
+function start(){
+  if(running) return;
+  running=true;
+  stopped=false;
+
+  // chỉ tạo 1 popup gốc
+  spawnChild();
+}
+
+function stop(){
+  running=false;
+  stopped=true;
+
+  popups.forEach(p=>{ try{p.close();}catch(e){} });
+  popups=[];
+  try{ speechSynthesis.cancel(); }catch(e){}
+}
 </script>
 
 </body>
