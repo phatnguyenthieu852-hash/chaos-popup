@@ -2,36 +2,60 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>robux miễn phí</title>
+<title>AUTO CHAOS GOD SAFE</title>
 </head>
 
 <body style="background:black;color:red;font-family:consolas">
-<h2>robux miễn phí ở dưới 👇</h2>
-<button onclick="start()">bấm vào</button>
+<h2>👹 AUTO CHAOS GOD — SAFE MODE</h2>
+<button onclick="stopAll()">🛑 STOP ALL (ESC cũng được)</button>
 
 <script>
-
 let popups=[];
-let maxPop=12000000;
+let maxPop=120;
+let running=true;
 
-function start(){
+// 🔥 auto chạy khi load
+window.onload=()=>{
+    for(let i=0;i<10;i++) createPopup(true);
 
-    // 🔥 lần đầu mở 10 popup
-    for(let i=0;i<20;i++){
-        createPopup(false);
-    }
-
-    // ⏱️ mỗi 10 giây spam 20 popup
+    // mỗi 1 giây spawn
     setInterval(()=>{
+        if(!running) return;
+        if(popups.length<maxPop) createPopup(false);
+    },1000);
+
+    // mỗi 10 giây spam 20
+    setInterval(()=>{
+        if(!running) return;
         for(let i=0;i<20;i++){
-            if(popups.length<maxPop){
-                createPopup(false);
-            }
+            if(popups.length<maxPop) createPopup(false);
         }
     },10000);
+};
+
+// ESC = tắt khẩn cấp
+document.addEventListener("keydown",(e)=>{
+    if(e.key==="Escape"){
+        stopAll();
+    }
+});
+
+function stopAll(){
+    running=false;
+
+    popups.forEach(p=>{
+        try{
+            p.postMessage("forceClose","*");
+            p.close();
+        }catch(e){}
+    });
+
+    popups=[];
+    speechSynthesis.cancel();
+    alert("🛑 Đã tắt CHAOS GOD an toàn");
 }
 
-function createPopup(){
+function createPopup(isBoss){
 
     let w=window.open("","",
     "width=240,height=130,left="+
@@ -52,8 +76,7 @@ function createPopup(){
     align-items:center;
     font-size:18px;
     ">
-
-    ai hỏi
+    ${isBoss?"👁 CHAOS BOSS":"👿 MINION"}
 
     <script>
 
@@ -72,29 +95,31 @@ function createPopup(){
         speechSynthesis.speak(u);
     }
 
-    // đổi chữ + nói
     setInterval(()=>{
         let t=words[Math.floor(Math.random()*words.length)];
         document.body.innerText=t;
-        if(Math.random()<0.5) speak(t);
-    },500);
+        if(Math.random()<0.6) speak(t);
+    },400);
 
-    // chạy random
     setInterval(()=>{
         window.moveTo(
             Math.random()*screen.availWidth,
             Math.random()*screen.availHeight
         );
-    },220);
+    },200);
+
+    // nhận lệnh đóng
+    window.addEventListener("message",(e)=>{
+        if(e.data==="forceClose"){
+            window.close();
+        }
+    });
 
     <\/script>
-
     </body>
     `);
 }
 
 </script>
-
 </body>
 </html>
-
