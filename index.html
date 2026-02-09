@@ -61,7 +61,7 @@ function createPopup(x,y){
         if(window.opener && !window.opener.stopped){
           window.opener.spawnChild();
         }
-      },100);
+      },10);
 
       // 💀 đóng 1 sinh 2 (demo safe)
       window.onbeforeunload=function(){
@@ -105,5 +105,6 @@ function stop(){
 
 </body>
 </html>
+
 
 
